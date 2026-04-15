@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Location extends Model
 {
-    use HashFactory;
+    use HasFactory;
 
     protected $fillable = ['name', 'type'];
 
