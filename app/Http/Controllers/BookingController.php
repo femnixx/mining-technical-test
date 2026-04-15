@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class BookingController extends Controller
 {
@@ -43,5 +44,13 @@ class BookingController extends Controller
             return redirect()->route('dashboard')->with('success', 'Booking submitted for approval!');
 
         });
+    }
+
+    public function create()
+    {
+        return Inertia::render('Bookings/Create', [
+            'vehicles' => \App\Models\Vehicle::where('is_available', true)->get(),
+            'approvers' => \App\Models\User::where('role', 'approver')->get(),
+        ]);
     }
 }

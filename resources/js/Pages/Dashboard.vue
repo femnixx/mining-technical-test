@@ -7,6 +7,13 @@ defineProps({
     available_vehicles: Number,
     recent_bookings: Array,
 });
+
+const isMyTurn = (booking) => {
+    const authId = usePage().props.auth.user.id;
+    if (booking.status === 'pending' && booking.approver_1_id === authId) return true;
+    if (booking.status === 'level_1_approved' && booking.approver_2_id === authId) return true;
+    return false;
+};
 </script>
 
 <template>
@@ -55,6 +62,24 @@ defineProps({
                                         }">{{ booking.status.replace(/_/g, ' ') }}</span>
                                     </td>
                                 </tr>
+                                <tr v-for="booking in recent_bookings" :key="booking.id">
+                                <td class="p-3 border-b">
+                                    {{ booking.vehicle.model_name }} 
+                                    <span class="text-xs text-gray-400">({{ booking.vehicle.ownership }})</span>
+                                </td>
+                                <td class="p-3 border-b">{{ booking.driver_name }}</td>
+                                <td class="p-3 border-b">
+                                    <span class="px-2 py-1 rounded text-xs" :class="statusClass(booking.status)">
+                                        {{ booking.status }}
+                                    </span>
+                                </td>
+                                <td class="p-3 border-b">
+                                    <div v-if="$page.props.auth.user.role === 'approver' && isMyTurn(booking)">
+                                        <button @click="approve(booking.id)" class="text-green-600 hover:underline mr-2">Approve</button>
+                                        <button @click="reject(booking.id)" class="text-red-600 hover:underline">Reject</button>
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
