@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Booking;
+use App\Models\Vehicle;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -15,7 +17,14 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard', [
+        'total_bookings' => Booking::count(),
+        'available_vehicles' => Vehicle::where('is_available', true)->count(),
+        'recent_bookings' => Booking::with(['vehicle', 'user'])
+            ->latest()
+            ->take(5)
+            ->get(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
