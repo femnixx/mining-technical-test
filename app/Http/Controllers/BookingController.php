@@ -31,7 +31,7 @@ class BookingController extends Controller
             'user_id' => auth()->id(),
             'action' => 'Created',
             'description' => 'New booking created for ' . $validated['driver_name'],
-        ])
+        ]);
 
         // return redirect()->route('bookings.index');
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('approver_1_id')->constrained('users');
             $table->foreignId('approver_2_id')->constrained('users');
             $table->string('driver_name');
-            $table->enum('status', ['pending', 'approved', 'rejected']);
+            $table->enum('status', ['pending', 'approved', 'approved_level_1', 'rejected'])->default('pending');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
         });
