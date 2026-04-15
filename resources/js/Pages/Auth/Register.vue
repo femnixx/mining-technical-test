@@ -11,6 +11,7 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    role: '',
 });
 
 const submit = () => {
@@ -76,7 +77,6 @@ const submit = () => {
                     for="password_confirmation"
                     value="Confirm Password"
                 />
-
                 <TextInput
                     id="password_confirmation"
                     type="password"
@@ -91,6 +91,19 @@ const submit = () => {
                     :message="form.errors.password_confirmation"
                 />
             </div>
+
+            <div class="mt-4">
+    <InputLabel for="role" value="Register As" />
+    <select
+        id="role"
+        v-model="form.role"
+        class="mt-1 block w-full dark:text-gray-300 focus:border-indigo-500 rounded-md shadow-sm"
+    >
+        <option value="admin">Admin (Pool Manager)</option>
+        <option value="approver">Approver (Manager)</option>
+    </select>
+    <InputError class="mt-2" :message="form.errors.role" />
+</div>
 
             <div class="mt-4 flex items-center justify-end">
                 <Link
