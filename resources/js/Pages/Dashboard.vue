@@ -88,7 +88,7 @@ const statusClass = (status) => ({
                                 <div class="font-bold">{{ booking.vehicle?.model_name }}</div>
                                 <div class="text-xs text-gray-400">{{ booking.vehicle?.plate_number }}</div>
                             </td>
-                            <td class="p-4 text-gray-600">{{ booking.driver_name }}</td>
+                            <td c@lass="p-4 text-gray-600">{{ booking.driver_name }}</td>
                             <td class="p-4">
                                 <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase" :class="statusClass(booking.status)">
                                     {{ booking.status.replace(/_/g, ' ') }}
