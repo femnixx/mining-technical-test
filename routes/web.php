@@ -7,7 +7,7 @@ use Inertia\Inertia;
 use App\Models\Booking;
 use App\Models\Vehicle;
 use App\Http\Controllers\BookingController;
-use App\Models\VehicleController;
+use App\Http\Controllers\VehicleController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

@@ -101,7 +101,7 @@ class BookingController extends Controller
         return abort(403);
     }
     public function show(Booking $booking) { 
-        return Inertia::render('Bookings/show', [
+        return Inertia::render('Bookings/ShowVehicle', [
             'booking' => $booking->load(['vehicle', 'user', 'approver1', 'approver2']),
             'logs' => ActivityLog::where('booking_id', $booking->id)
                 ->with('user')

@@ -14,7 +14,7 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/Show', [
             'vehicle' => $vehicle,
             'booking_history' => Booking::where('vehicle_id', $vehicle->id)
-                ->with('user')
+                ->with(['user', 'approver1', 'approver2'])
                 ->where('status', 'approved')
                 ->latest()
                 ->get()
