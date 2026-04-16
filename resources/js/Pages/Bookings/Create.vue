@@ -21,7 +21,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('bookings.store'));
+    form.post(route('bookings.store'), {
+        onSuccess: () => console.log('Bookings saved'),
+        onError: (errors) => console.error("Validation failed: ", errors)
+    });
 };
 </script>
 

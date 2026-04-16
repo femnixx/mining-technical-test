@@ -53,4 +53,51 @@ class BookingController extends Controller
             'approvers' => \App\Models\User::where('role', 'approver')->get(),
         ]);
     }
+
+    public function approve(Request $request, Booking $booking)
+    {
+        $user = auth()->user();
+
+        if ($booking->status === 'pending' && $user->id === $booking->approver_1_id) { 
+            $booking->update(['status' => 'approved_level_1']);
+
+            ActivityLog::create([
+                'booking_id' => $booking->id,
+                'user_id' => $user->id, 
+                'action' => 'Level 1 approval',
+                'description' => "Approved by {$user->name}"
+            ]);
+            return back()->with('success', 'Level 1 approved');
+        }
+        if ($booking->status === 'approved_level_1' && $user->id === $booking->approver_2_id) {
+            $booking->update(['status' => 'approved']);
+
+            ActivityLog::create([
+                'booking_id' => $booking->id,
+                'user_id' => $user->id,
+                'action' => 'Final Approval',
+                'description' => "Final approval given by {$user->name}"
+            ]);
+            return back()->with('success', 'Booking fully approved');
+        }
+        return abort(403, 'Unauthorized');
+
+    }
+    public function reject(Request $request, Booking $booking) 
+    {
+        $user = auth()->user();
+
+        if (in_array($user->id, [$booking->approver_1_id, $booking->approver_2_id])) {
+            $booking->update(['status' => 'rejected']);
+
+            ActivityLog::create([
+                'booking_id'=> $booking->id,
+                'user_id' => $user->id,
+                'action' => 'Rejected',
+                'description' => "Booking rejected by {$user->name}"
+            ]);
+            return back()->with('error', 'Booking rejected');
+        }
+        return abort(403);
+    }
 }

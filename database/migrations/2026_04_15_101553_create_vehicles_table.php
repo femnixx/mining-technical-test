@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('fuel_consumption');
             $table->date('last_service_at')->nullable();
             $table->boolean('is_available')->default(true);
+            $table->float('distance_km');
         });
     }
 

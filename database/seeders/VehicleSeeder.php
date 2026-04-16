@@ -19,6 +19,7 @@ class VehicleSeeder extends Seeder
             'ownership' => 'owned',
             'location_id' => 3, // Site Borneo
             'fuel_consumption' => 12.5,
+            'distance_km' => 0,
         ],
         [
             'model_name' => 'Mitsubishi Triton',
@@ -27,6 +28,7 @@ class VehicleSeeder extends Seeder
             'ownership' => 'rented',
             'location_id' => 4, // Site Sumatra
             'fuel_consumption' => 11.2,
+            'distance_km' => 0,
         ],
         // Cargo/Heavy Vehicles (Angkutan Barang)
         [
@@ -36,6 +38,7 @@ class VehicleSeeder extends Seeder
             'ownership' => 'owned',
             'location_id' => 5, // Site Sulawesi
             'fuel_consumption' => 45.0,
+            'distance_km' => 0,
         ],
         [
             'model_name' => 'Scania P360 Mining Tipper',
@@ -44,6 +47,7 @@ class VehicleSeeder extends Seeder
             'ownership' => 'owned',
             'location_id' => 1, // Head Office (for display/standby)
             'fuel_consumption' => 50.5,
+            'distance_km' => 0,
         ]
     ];
 
