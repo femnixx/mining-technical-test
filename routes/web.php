@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Booking;
 use App\Models\Vehicle;
 use App\Http\Controllers\BookingController;
+use App\Models\VehicleController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings/{booking}/reject', [BookingController::class, 'reject'])->name('bookings.reject');
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+    Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show'])->name('vehicles.show');
     });
 
 require __DIR__.'/auth.php';

@@ -35,11 +35,16 @@ const statusClass = (status) => ({
                     <tbody class="divide-y divide-gray-100">
                         <tr v-for="booking in bookings" :key="booking.id" class="hover:bg-gray-50">
                             <td class="p-4">
-                                <Link :href="route('bookings.show', booking.id)" class="hover:text-indigo-600 transition">
-                                    <div class="font-bold">{{ booking.vehicle?.model_name }}</div>
-                                    <div class="text-xs text-gray-400">{{ booking.vehicle?.plate_number }}</div>
-                                </Link>
-                            </td>
+                            <Link :href="route('vehicles.show', booking.vehicle_id)" class="group hover:text-indigo-600 transition">
+                                <div class="font-bold group-hover:underline">{{ booking.vehicle?.model_name }}</div>
+                                
+                                <div class="flex gap-2 text-[10px] text-gray-400 mt-1 font-mono">
+                                    <span>{{ booking.vehicle?.plate_number }}</span>
+                                    <span class="text-gray-300">|</span>
+                                    <span>{{ booking.vehicle?.fuel_consumption }} L/km</span>
+                                </div>
+                            </Link>
+                        </td>
                             <td class="p-4 text-gray-600">{{ booking.driver_name }}</td>
                             <td class="p-4 text-gray-600">{{ booking.user?.name }}</td>
                             <td class="p-4">
