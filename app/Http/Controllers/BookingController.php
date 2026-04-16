@@ -100,4 +100,17 @@ class BookingController extends Controller
         }
         return abort(403);
     }
+    public function show(Booking $booking) { 
+        return Inertia::render('Bookings/show', [
+            'booking' => $booking->load(['vehicle', 'user', 'approver1', 'approver2'])
+        ]);
+    }
+    public function index() 
+    {
+        return Inertia::render("Bookings/Index", [
+            'bookings' => Booking::with(['vehicle', 'user'])
+            ->latest()
+            ->get(),
+        ]);
+    }
 }
