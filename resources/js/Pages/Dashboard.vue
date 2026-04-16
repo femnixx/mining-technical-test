@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, usePage, router } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 
 const props = defineProps({
     total_bookings: Number,
@@ -8,22 +9,28 @@ const props = defineProps({
     recent_bookings: Array,
 });
 
-// Helper to check if the current user is the required approver for the current stage
 const isMyTurn = (booking) => {
     const authId = usePage().props.auth.user.id;
-    if (booking.status === 'pending' && booking.approver_1_id === authId) return true;
-    if (booking.status === 'approved_level_1' && booking.approver_2_id === authId) return true;
+
+    const approver1 = Number(booking.approver_1_id);
+    const approver2 = Number(booking.approver_2_id);
+
+    if (booking.status === 'pending' && approver1 === authId) return true;
+    if (booking.status === 'approved_level_1' && approver2  === authId) return true;
     return false;
 };
 
-// Logic for Approval
 const approve = (id) => {
     if (confirm('Are you sure you want to approve this booking?')) {
         router.post(route('bookings.approve', id));
     }
 };
 
-// Logic for Rejection
+onMounted(() => { 
+    console.log("Logged in user: ", usePage().props.auth.user);
+    console.log("Recent bookings data:", props.recent_bookings);
+})
+
 const reject = (id) => {
     if (confirm('Are you sure you want to reject this booking?')) {
         router.post(route('bookings.reject', id));
