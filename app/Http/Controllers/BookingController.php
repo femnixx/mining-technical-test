@@ -117,4 +117,45 @@ class BookingController extends Controller
             ->get(),
         ]);
     }
+    public function export() 
+    { 
+        $bookings = Booking::with(['vehicle', 'adming', 'approver1', 'approver2'])
+            ->latest()
+            ->get();
+        $fileName = 'laporan_pemesanan_kendaraan_' . date('Y-m-d') . '.csv';
+
+       $headers = [
+        "Content-type"        => "text/csv",
+        "Content-Disposition" => "attachment; filename=$fileName",
+        "Pragma"              => "no-cache",
+        "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+        "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Driver', 'Kendaraan', 'Plat', 'Admin', 'Approver 1', 'Approver 2', 'Status', 'Tanggal Mulai', 'Tanggal Selesai'];
+        
+        $callback = function() use($bookings, $columns) {
+        $file = fopen('php://output', 'w');
+        
+        fputcsv($file, $columns);
+
+        foreach ($bookings as $booking) {
+            fputcsv($file, [
+                $booking->id,
+                $booking->driver_name,
+                $booking->vehicle?->model_name,
+                $booking->vehicle?->plate_number,
+                $booking->admin?->name,
+                $booking->approver1?->name,
+                $booking->approver2?->name,
+                $booking->status,
+                $booking->start_date,
+                $booking->end_date,
+            ]);
+        }
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
 }
