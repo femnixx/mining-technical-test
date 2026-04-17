@@ -57,7 +57,7 @@ const props = defineProps({
                     </div>
                 </div>
                 <div class="mt-8">
-    <h3 class="text-lg font-bold text-gray-800 mb-4">Booking & Approval History</h3>
+    <h3 class="text-lg font-bold text-gray-800 mb-4 mx-4">Booking & Approval History</h3>
     <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

@@ -11,9 +11,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Get usage data for the chart (Grouped by Vehicle Model)
-        $chartData = Booking::select('vehicles.model_name', DB::raw('count(*) as total'))
+            $chartData = Booking::select('vehicles.model_name', DB::raw('count(*) as total'))
             ->join('vehicles', 'bookings.vehicle_id', '=', 'vehicles.id')
+            ->where('bookings.status', 'approved')
             ->groupBy('vehicles.model_name')
             ->get();
 

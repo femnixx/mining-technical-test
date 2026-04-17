@@ -100,7 +100,7 @@ const statusClass = (status) => ({
                                     <button @click="reject(booking.id)" class="text-red-600 font-bold hover:underline">Reject</button>
                                 </div>
                                 <Link v-else-if="isAdmin()" 
-                                      :href="route('bookings.create', booking.id)" 
+                                      :href="route('bookings.show', booking.id)" 
                                       class="text-xs text-gray-500 hover:text-indigo-600 font-bold">
                                     Details
                                 </Link>
