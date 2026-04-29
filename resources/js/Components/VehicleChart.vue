@@ -2,15 +2,12 @@
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
-// We register these Chart.js modules once so they are available in the component
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const props = defineProps({
-    // The data arriving from your DashboardController (e.g., model_name and total)
     chartData: Array 
 });
 
-// We map the array of objects into the separate arrays that Chart.js expects
 const data = {
     labels: props.chartData.map(item => item.model_name),
     datasets: [{

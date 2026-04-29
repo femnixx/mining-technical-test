@@ -29,4 +29,7 @@ class Booking extends Model
     public function vehicle() {
         return $this->belongsTo(Vehicle::class);
     }
+    public function admin() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

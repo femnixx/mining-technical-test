@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, usePage, router, Link } from '@inertiajs/vue3';
-import VehicleChart from '@/Components/VehicleChart.vue'; // Importing the 'Graphic Thing'
-
+import VehicleChart from '@/Components/VehicleChart.vue'; 
 const props = defineProps({
     total_bookings: Number,
     available_vehicles: Number,
@@ -11,6 +10,7 @@ const props = defineProps({
 });
 
 const isAdmin = () => usePage().props.auth.user.role?.toLowerCase() === 'admin';
+const isApprover = () => usePage().props.auth.user.role?.toLowerCase() === 'approver';
 
 const isMyTurn = (booking) => {
     const authId = Number(usePage().props.auth.user.id);
@@ -18,9 +18,9 @@ const isMyTurn = (booking) => {
 
     if (role !== 'approver') return false;
 
-    // Level 1 logic
+
     if (booking.status === 'pending' && Number(booking.approver_1_id) === authId) return true;
-    // Level 2 logic
+
     if (booking.status === 'approved_level_1' && Number(booking.approver_2_id) === authId) return true;
     
     return false;
@@ -97,7 +97,7 @@ const statusClass = (status) => ({
                 <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <h3 class="font-bold text-gray-700">Recent Booking Activities</h3>
                     
-                    <Link v-if="isAdmin()" 
+                    <Link v-if="isAdmin() || isApprover()" 
                           :href="route('bookings.index')" 
                           class="text-xs text-indigo-600 hover:text-indigo-800 font-bold uppercase tracking-wider transition">
                         View Full History →
@@ -131,7 +131,7 @@ const statusClass = (status) => ({
                                         <button @click="approve(booking.id)" class="text-green-600 text-xs font-black hover:text-green-800 uppercase tracking-tighter transition">Approve</button>
                                         <button @click="reject(booking.id)" class="text-red-600 text-xs font-black hover:text-red-800 uppercase tracking-tighter transition">Reject</button>
                                     </div>
-                                    <Link v-else-if="isAdmin()" 
+                                    <Link v-else-if="isAdmin() || isApprover()" 
                                           :href="route('bookings.show', booking.id)" 
                                           class="text-xs text-gray-400 hover:text-indigo-600 font-bold transition">
                                         View Details

@@ -15,7 +15,6 @@ class VehicleController extends Controller
             'vehicle' => $vehicle,
             'booking_history' => Booking::where('vehicle_id', $vehicle->id)
                 ->with(['user', 'approver1', 'approver2'])
-                ->where('status', 'approved')
                 ->latest()
                 ->get()
         ]);

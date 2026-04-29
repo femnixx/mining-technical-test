@@ -119,7 +119,7 @@ class BookingController extends Controller
     }
     public function export() 
     { 
-        $bookings = Booking::with(['vehicle', 'adming', 'approver1', 'approver2'])
+        $bookings = Booking::with(['vehicle', 'admin', 'approver1', 'approver2'])
             ->latest()
             ->get();
         $fileName = 'laporan_pemesanan_kendaraan_' . date('Y-m-d') . '.csv';
