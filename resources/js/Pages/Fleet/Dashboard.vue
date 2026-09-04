@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import FleetMap from '@/Components/FleetMap.vue';
 import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -25,6 +26,8 @@ const statusBadge = (status) => {
         <template #header>
             <h2 class="text-xl font-semibold text-gray-900">Fleet Dashboard</h2>
         </template>
+
+        <FleetMap :vehicles="vehicles" :shifts="active_shifts" class="mb-6" />
 
         <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <div class="rounded-md border border-gray-200 bg-white p-4">
