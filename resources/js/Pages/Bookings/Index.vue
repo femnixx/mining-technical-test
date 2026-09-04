@@ -5,10 +5,10 @@ import { Head, Link } from '@inertiajs/vue3';
 defineProps({ bookings: Array });
 
 const statusClass = (status) => ({
-    'bg-yellow-100 text-yellow-800': status === 'pending',
-    'bg-blue-100 text-blue-800': status === 'approved_level_1',
-    'bg-green-100 text-green-800': status === 'approved',
-    'bg-red-100 text-red-800': status === 'rejected',
+    'bg-gray-100 text-gray-800': status === 'pending',
+    'bg-blue-50 text-blue-800': status === 'approved_level_1',
+    'bg-green-50 text-green-800': status === 'approved',
+    'bg-red-50 text-red-800': status === 'rejected',
 });
 </script>
 
@@ -16,46 +16,45 @@ const statusClass = (status) => ({
     <Head title="All Bookings" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">All Bookings</h2>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-gray-900">All Bookings</h2>
+                <Link :href="route('dashboard')" class="text-sm font-medium text-gray-700 hover:text-gray-900">&larr; Back</Link>
+            </div>
         </template>
 
-        <div class="py-10 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow rounded-lg overflow-hidden">
-                <Link class="ml-4 my-2" :href="route('dashboard')">Back to Dashboard</Link>
-                <table class="w-full text-left">
-                    
-                    <thead class="bg-gray-50 text-xs uppercase font-semibold text-gray-600">
+        <div class="rounded-md border border-gray-200 bg-white">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-600">
                         <tr>
-                            <th class="p-4">Vehicle</th>
-                            <th class="p-4">Driver</th>
-                            <th class="p-4">Requested By</th>
-                            <th class="p-4">Status</th>
+                            <th class="px-4 py-3">Vehicle</th>
+                            <th class="px-4 py-3">Driver</th>
+                            <th class="px-4 py-3">Requested By</th>
+                            <th class="px-4 py-3">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <tr v-for="booking in bookings" :key="booking.id" class="hover:bg-gray-50">
-                            <td class="p-4">
-                            <Link :href="route('vehicles.show', booking.vehicle_id)" class="group hover:text-indigo-600 transition">
-                                <div class="font-bold group-hover:underline">{{ booking.vehicle?.model_name }}</div>
-                                
-                                <div class="flex gap-2 text-[10px] text-gray-400 mt-1 font-mono">
-                                    <span>{{ booking.vehicle?.plate_number }}</span>
-                                    <span class="text-gray-300">|</span>
-                                    <span>{{ booking.vehicle?.fuel_consumption }} L/km</span>
-                                </div>
-                            </Link>
-                        </td>
-                            <td class="p-4 text-gray-600">{{ booking.driver_name }}</td>
-                            <td class="p-4 text-gray-600">{{ booking.user?.name }}</td>
-                            <td class="p-4">
-                                <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase" :class="statusClass(booking.status)">
+                    <tbody class="divide-y divide-gray-200">
+                        <tr v-for="booking in bookings" :key="booking.id">
+                            <td class="px-4 py-3">
+                                <Link :href="route('vehicles.show', booking.vehicle_id)" class="font-medium text-gray-900 hover:text-gray-700">
+                                    {{ booking.vehicle?.model_name }}
+                                    <div class="text-xs text-gray-500">{{ booking.vehicle?.plate_number }} &middot; {{ booking.vehicle?.fuel_consumption }} L/km</div>
+                                </Link>
+                            </td>
+                            <td class="px-4 py-3 text-gray-700">{{ booking.driver_name }}</td>
+                            <td class="px-4 py-3 text-gray-700">{{ booking.user?.name }}</td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold" :class="statusClass(booking.status)">
                                     {{ booking.status.replace(/_/g, ' ') }}
                                 </span>
                             </td>
+                        </tr>
+                        <tr v-if="!bookings.length">
+                            <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No bookings found.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </AuthenticatedLayout>
-</template>@
+</template>
