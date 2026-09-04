@@ -5,18 +5,15 @@ use App\Http\Controllers\FleetDashboardController;
 use App\Http\Controllers\VehicleDetailController;
 use App\Http\Controllers\DispatchController;
 use App\Http\Controllers\MaintenanceController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\VehicleController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Landing', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
 });
 
