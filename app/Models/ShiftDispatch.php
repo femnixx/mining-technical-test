@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+#[Fillable(['vehicle_id', 'operator_id', 'pit_location', 'shift_start', 'shift_end', 'target_tonnage'])]
+class ShiftDispatch extends Model
+{
+    use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'shift_start' => 'datetime',
+            'shift_end' => 'datetime',
+            'target_tonnage' => 'decimal:2',
+        ];
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(HeavyVehicle::class);
+    }
+
+    public function operator()
+    {
+        return $this->belongsTo(Operator::class);
+    }
+}

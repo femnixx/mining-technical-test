@@ -1,5 +1,10 @@
 <?php
+
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FleetDashboardController;
+use App\Http\Controllers\VehicleDetailController;
+use App\Http\Controllers\DispatchController;
+use App\Http\Controllers\MaintenanceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +37,34 @@ Route::middleware('auth')->group(function () {
     Route::post('/bookings/{booking}/reject', [BookingController::class, 'reject'])->name('bookings.reject');
 
     Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show'])->name('vehicles.show');
+
+    Route::get('/fleet/dashboard', [FleetDashboardController::class, 'index'])->name('fleet.dashboard');
+    Route::get('/fleet/vehicles/{vehicle}', [VehicleDetailController::class, 'show'])->name('fleet.vehicles.show');
+
+    Route::get('/dispatch', [DispatchController::class, 'index'])->name('dispatch.panel');
+    Route::post('/dispatch', [DispatchController::class, 'store'])->name('dispatch.store');
+    Route::post('/dispatch/{dispatch}/end', [DispatchController::class, 'endShift'])->name('dispatch.end');
+
+    Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.queue');
+    Route::post('/maintenance', [MaintenanceController::class, 'store'])->name('maintenance.store');
+    Route::patch('/maintenance/{maintenance}', [MaintenanceController::class, 'update'])->name('maintenance.update');
+});
+
+Route::get('/health', function () {
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        return response()->json([
+            'status' => 'ok',
+            'database' => 'connected',
+            'timestamp' => now()->toIso8601String(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'database' => 'disconnected',
+            'timestamp' => now()->toIso8601String(),
+        ], 500);
+    }
 });
 
 require __DIR__.'/auth.php';

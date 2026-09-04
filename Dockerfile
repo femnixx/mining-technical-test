@@ -1,45 +1,31 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# install app dependencies
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
-    php-cli \
-    php-mysql \
-    php-curl \
-    unzip \ 
+    libzip-dev \
+    zip \
+    unzip \
+    git \
     curl \
-    gnupg
+    && docker-php-ext-install pdo_mysql zip bcmath
 
-# install php extensions
-RUN docker-php-ext-install pdo_mysql gd bcmath
-
-# install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# setup node.js
-RUN curl -fsS https://deb,nodesource.com/setup_20.x | bash - && \ 
-    apt-get install -y nodejs
+WORKDIR /var/www/html
 
-# set working directory
-WORKDIR /var/www
+COPY composer.json composer.lock ./
+RUN composer install 
 
-# copy everything
 COPY . .
 
-# copy code and config
-COPY docker/nginx.conf /etc/nginx/sites-available/default
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN composer dump-autoload --optimize
 
-# permissions & executables
-RUN chmod +x /usr/local/bin/entrypoint.sh && \
-    chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# install app dependencies
-RUN composer install --no-dev --optimize-autloader 
-RUN npm i && npm run build
+RUN a2enmod rewrite
 
 EXPOSE 80
-CMD ["entrypoint.sh"]
+CMD ["apache2-foreground"]
