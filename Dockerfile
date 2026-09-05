@@ -1,28 +1,38 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.4-apache
+FROM php:8.2-apache
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y     libzip-dev     zip     unzip     git     curl     nodejs     npm     && docker-php-ext-install pdo_mysql zip bcmath
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install pdo_mysql zip bcmath
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader
+
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
 COPY . .
 
-RUN composer install
+RUN npm run build && \
+    composer dump-autoload --optimize
 
-RUN npm install && npm run build
-
-RUN composer dump-autoload --optimize
-
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 RUN a2enmod rewrite
 
-COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
-
 EXPOSE 80
-CMD [apache2-foreground]
+CMD ["apache2-foreground"]
