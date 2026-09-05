@@ -1,16 +1,16 @@
-FROM php:8.2-apache
+FROM ubuntu:jammy
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN echo "Starting apt-get update..." && \
-    apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    git \
-    curl \
+RUN apt-get update && apt-get install -y \
+    php8.2-apache \
+    php8.2-zip \
+    php8.2-bcmath \
+    php8.2-mysql \
+    composer \
     nodejs \
     npm \
-    && docker-php-ext-install pdo_mysql zip bcmath \
+    libzip-dev \
+    git \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
