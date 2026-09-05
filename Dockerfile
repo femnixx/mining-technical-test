@@ -1,4 +1,7 @@
 FROM php:8.2-apache
+
+RUN sed -i 's/deb.debian.org/mirror.example.com/g' /etc/apt/sources.list || true
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
