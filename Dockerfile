@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Add the PHP PPA and install the explicit PHP 8.3 ecosystem + dependencies
-RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y \
+RUN add-apt-repository -y ppa:ondrej/php && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && apt-get install -y \
     apache2 \
     libapache2-mod-php8.4 \
     php8.4-cli \
@@ -20,7 +22,6 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y
     php8.4-mbstring \
     php8.4-curl \
     nodejs \
-    npm \
     libzip-dev \
     git \
     curl \
