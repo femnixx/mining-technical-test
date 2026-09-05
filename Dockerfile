@@ -11,14 +11,14 @@ RUN apt-get update && apt-get install -y \
 # 2. Add the PHP PPA and install the explicit PHP 8.3 ecosystem + dependencies
 RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y \
     apache2 \
-    libapache2-mod-php8.3 \
-    php8.3-cli \
-    php8.3-zip \
-    php8.3-bcmath \
-    php8.3-mysql \
-    php8.3-xml \
-    php8.3-mbstring \
-    php8.3-curl \
+    libapache2-mod-php8.4 \
+    php8.4-cli \
+    php8.4-zip \
+    php8.4-bcmath \
+    php8.4-mysql \
+    php8.4-xml \
+    php8.4-mbstring \
+    php8.4-curl \
     nodejs \
     npm \
     libzip-dev \
