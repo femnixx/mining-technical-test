@@ -18,7 +18,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoload
+RUN composer install --no-dev --no-scripts --no-autoloader
 
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
