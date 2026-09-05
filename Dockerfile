@@ -1,7 +1,17 @@
 FROM ubuntu:jammy
 
+# Prevent interactive prompts during the build process
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 1. Install software-properties-common to get the add-apt-repository command
 RUN apt-get update && apt-get install -y \
-    php8.2-apache \
+    software-properties-common \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Add the PHP PPA (with the -y flag) and install the entire stack
+RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get install -y \
+    apache2 \
+    libapache2-mod-php8.2 \
     php8.2-zip \
     php8.2-bcmath \
     php8.2-mysql \
@@ -42,4 +52,7 @@ RUN chown -R www-data:www-data /var/www/html/ && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+
+# Note: "apache2-foreground" is unique to the official PHP-Apache base image. 
+# For native Ubuntu, use standard Apache execution strings:
+CMD ["apache2ctl", "-D", "FOREGROUND"]
