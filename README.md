@@ -115,8 +115,37 @@ Workspace Ready (Dashboard)
 
 - Application logs are captured via Docker container stdout
 - SQLite database file can be mounted for external backup
-- Grafana can be pointed at Loki, Prometheus, or logs exported from the app container
 - Health check endpoint available at `/health`
+- Grafana included in the stack for dashboarding
+
+### Grafana Setup
+
+1. **Start Grafana with Docker Compose**
+
+   ```bash
+   docker compose up -d grafana
+   ```
+
+2. **Access Grafana**
+
+   Open `http://localhost:3000` and log in with the default credentials:
+   - Username: `admin`
+   - Password: `admin`
+
+3. **Add a data source**
+
+   In Grafana, add a new data source pointing to your preferred backend:
+   - **Loki** - for log aggregation from Docker containers
+   - **Prometheus** - for metrics collection
+   - **SQLite** - direct database queries (requires a SQLite plugin)
+
+4. **Create dashboards**
+
+   Import or build dashboards to visualize:
+   - Application response times and error rates
+   - Fleet booking volumes and trends
+   - Database growth and query performance
+   - Container resource usage (CPU, memory, network)
 
 ## Security
 
@@ -124,6 +153,58 @@ Workspace Ready (Dashboard)
 - HTTPS terminated by Tailscale Funnel with automatic certificates
 - Session-based authentication with Laravel's built-in security
 - Role-based access control (Admin, Approver, Guest, Vendor)
+
+## Troubleshooting
+
+### Tailscale Funnel
+
+If `sudo tailscale funnel https+insecure://localhost:8000` fails with `invalid hostname or IP address`, ensure:
+
+1. Tailscale is running and the node is reachable:
+   ```bash
+   tailscale status
+   ```
+
+2. Use the correct syntax for your Tailscale version:
+   ```bash
+   # Modern syntax
+   sudo tailscale funnel --https=443 80
+
+   # If your app is on port 8000 instead
+   sudo tailscale funnel --https=443 8000
+   ```
+
+3. Verify the local service is running before exposing it:
+   ```bash
+   curl -I http://localhost:80
+   ```
+
+4. Check firewall rules on the host:
+   ```bash
+   sudo iptables -L -n
+   ```
+
+5. If using a custom hostname, make sure it resolves within the Tailscale network:
+   ```bash
+   tailscale ping <node-name>
+   ```
+
+### Docker Build Failures
+
+If the Docker image fails to build:
+
+1. Clear build cache and rebuild:
+   ```bash
+   docker compose build --no-cache
+   ```
+
+2. Check Node.js and npm availability in the container:
+   ```bash
+   docker compose run --rm app node --version
+   docker compose run --rm app npm --version
+   ```
+
+3. If `npm ci` fails due to network errors, the Dockerfile includes retry logic. Rebuild after confirming network connectivity.
 
 ## License
 
