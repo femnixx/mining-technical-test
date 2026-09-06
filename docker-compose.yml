@@ -6,8 +6,10 @@ services:
     ports:
       - "8000:80"
     environment:
-      - APP_ENV=local
+      - APP_ENV=production
       - APP_DEBUG=true
+      - APP_URL=https://debian-server.tail7b7869.ts.net
+      - ASSET_URL=https://debian-server.tail7b7869.ts.net
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/database/database.sqlite
       - SESSION_DRIVER=file
