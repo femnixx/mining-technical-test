@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import ThemeToggle from '@/Components/ThemeToggle.vue';
 
 defineProps({
     canLogin: {
@@ -115,6 +116,7 @@ const faqs = [
                 </div>
 
                 <div v-if="canLogin" class="flex items-center gap-4">
+                    <ThemeToggle />
                     <Link
                         v-if="$page.props.auth.user"
                         :href="route('dashboard')"

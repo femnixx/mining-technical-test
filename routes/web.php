@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FleetDashboardController;
 use App\Http\Controllers\VehicleDetailController;
@@ -17,11 +18,22 @@ Route::get('/', function () {
     ]);
 });
 
+Route::middleware('auth')->prefix('onboarding')->name('onboarding.')->group(function () {
+    Route::get('/', [OnboardingController::class, 'index'])->name('index');
+    Route::get('/organization', [OnboardingController::class, 'organization'])->name('organization');
+    Route::post('/organization', [OnboardingController::class, 'storeOrganization'])->name('organization.store');
+    Route::get('/vehicles', [OnboardingController::class, 'vehicles'])->name('vehicles');
+    Route::post('/vehicles', [OnboardingController::class, 'storeVehicles'])->name('vehicles.store');
+    Route::get('/operators', [OnboardingController::class, 'operators'])->name('operators');
+    Route::post('/operators', [OnboardingController::class, 'storeOperators'])->name('operators.store');
+    Route::get('/complete', [OnboardingController::class, 'complete'])->name('complete');
+});
+
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'onboarding.complete'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'onboarding.complete'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'user_id',
@@ -13,10 +14,16 @@ use Illuminate\Database\Eloquent\Model;
     'driver_name',
     'start_date',
     'end_date',
-    'status'
+    'status',
+    'organization_id'
 ])]
 class Booking extends Model
 {
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }

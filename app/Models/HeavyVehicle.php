@@ -5,12 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['vehicle_code', 'type', 'model', 'status', 'fuel_capacity_l'])]
+#[Fillable(['vehicle_code', 'type', 'model', 'status', 'fuel_capacity_l', 'organization_id'])]
 class HeavyVehicle extends Model
 {
     use HasFactory, SoftDeletes;
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
 
     protected function casts(): array
     {
