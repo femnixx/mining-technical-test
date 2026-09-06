@@ -48,6 +48,8 @@ RUN touch /var/www/html/database/database.sqlite && \
     chmod -R 775 /var/www/html/storage && \
     chmod 664 /var/www/html/database/database.sqlite
 
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 EXPOSE 80
 
 CMD ["apache2-foreground"]
