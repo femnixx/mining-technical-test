@@ -16,3 +16,8 @@ services:
       - CACHE_STORE=file
       - QUEUE_CONNECTION=sync
       - VITE_APP_NAME=Laravel
+
+grafana:
+  image: grafana/grafana:latest
+  ports:
+    - "3000:3000"
