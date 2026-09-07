@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== MineOps Simulation Bootstrap ==="
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker is required"
+  exit 1
+fi
+
+echo "[1/5] Building app image..."
+docker compose build
+
+echo "[2/5] Starting containers..."
+docker compose up -d
+
+echo "[3/5] Waiting for app to be ready..."
+for i in {1..60}; do
+  if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep -q "200"; then
+    break
+  fi
+  sleep 1
+done
+
+echo "[4/5] Seeding database..."
+docker compose exec app php artisan migrate:fresh --seed --force
+
+echo "[5/5] Creating simulation data..."
+docker compose exec app php artisan tinker --execute="
+App\Models\User::firstOrCreate(
+  ['email' => 'admin@mineops.com'],
+  ['name' => 'Admin', 'password' => bcrypt('admin123'), 'role' => 'admin', 'email_verified_at' => now()]
+);
+App\Models\User::firstOrCreate(
+  ['email' => 'sarah@mineops.com'],
+  ['name' => 'Sarah Manager', 'password' => bcrypt('password'), 'role' => 'approver', 'email_verified_at' => now()]
+);
+App\Models\User::firstOrCreate(
+  ['email' => 'mike@mineops.com'],
+  ['name' => 'Mike Lead', 'password' => bcrypt('password'), 'role' => 'approver', 'email_verified_at' => now()]
+);
+App\Models\User::firstOrCreate(
+  ['email' => 'lisa@mineops.com'],
+  ['name' => 'Lisa Supervisor', 'password' => bcrypt('password'), 'role' => 'approver', 'email_verified_at' => now()]
+);
+\$admin = App\Models\User::where('email', 'admin@mineops.com')->first();
+\$approvers = App\Models\User::where('role', 'approver')->get();
+\$vehicles = App\Models\Vehicle::inRandomOrder()->take(4)->get();
+if (\$vehicles->count() >= 2) {
+  App\Models\Booking::create([
+    'user_id' => \$admin->id,
+    'vehicle_id' => \$vehicles[0]->id,
+    'approver_1_id' => \$approvers[0]->id,
+    'approver_2_id' => \$approvers[1]->id,
+    'driver_name' => 'Budi Santoso',
+    'start_date' => now(),
+    'end_date' => now()->addDays(3),
+    'status' => 'pending',
+  ]);
+  App\Models\Booking::create([
+    'user_id' => \$admin->id,
+    'vehicle_id' => \$vehicles[1]->id,
+    'approver_1_id' => \$approvers[0]->id,
+    'approver_2_id' => \$approvers[2]->id,
+    'driver_name' => 'Ahmad Hidayat',
+    'start_date' => now(),
+    'end_date' => now()->addDays(2),
+    'status' => 'approved_level_1',
+  ]);
+}
+\$heavy = App\Models\HeavyVehicle::where('status', 'Active')->take(3)->get();
+\$operators = App\Models\Operator::whereIn('status', ['On Shift', 'On Break'])->get();
+if (\$heavy->count() >= 2 && \$operators->count() >= 2) {
+  App\Models\ShiftDispatch::create([
+    'vehicle_id' => \$heavy[0]->id,
+    'operator_id' => \$operators[0]->id,
+    'pit_location' => 'Pit A',
+    'target_tonnage' => 120.5,
+    'shift_start' => now()->subHours(2),
+  ]);
+  App\Models\ShiftDispatch::create([
+    'vehicle_id' => \$heavy[1]->id,
+    'operator_id' => \$operators[1]->id,
+    'pit_location' => 'Pit B',
+    'target_tonnage' => 85.0,
+    'shift_start' => now()->subHours(1),
+  ]);
+}
+echo 'Simulation data created';
+"
+
+cat << 'EOM'
+
+Simulation running.
+
+Open:
+  http://localhost:8000
+
+Accounts:
+  admin@mineops.com / admin123
+  sarah@mineops.com / password
+  mike@mineops.com   / password
+  lisa@mineops.com   / password
+
+To stop:
+  docker compose down
+EOM
