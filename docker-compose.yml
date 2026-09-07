@@ -21,3 +21,7 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+    volumes:
+      - ./database/database.sqlite:/var/lib/grafana/test_data.sqlite:ro
