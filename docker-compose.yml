@@ -17,7 +17,7 @@ services:
       - QUEUE_CONNECTION=sync
       - VITE_APP_NAME=Laravel
     volumes:
-      - ./data/laravel-db:/var/www/html/database/
+      - ./database:/var/www/html/database/
 
   grafana:
     image: grafana/grafana:latest
@@ -26,7 +26,7 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource
     volumes:
-      - ./data/laravel-db:/var/lib/grafana/laravel-monitor:ro
+      - ./database:/var/lib/grafana/laravel-monitor:ro
       - grafana-data:/var/lib/grafana
 
 volumes:
