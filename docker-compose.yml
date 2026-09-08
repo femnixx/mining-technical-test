@@ -17,7 +17,7 @@ services:
       - QUEUE_CONNECTION=sync
       - VITE_APP_NAME=Laravel
     volumes:
-      - laravel-db:/var/www/html/database
+      - laravel-db:/var/www/html/database/database.sqlite
 
   grafana:
     image: grafana/grafana:latest
@@ -28,6 +28,8 @@ services:
     volumes:
       - ./database/database.sqlite:/var/lib/grafana/test_data.sqlite:ro
       - laravel-db:/var/lib/grafana/laravel-database
+      - grafana-data:/var/lib/grafana
 
 volumes:
   laravel-db:
+  grafana-data:
