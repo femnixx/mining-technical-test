@@ -24,7 +24,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      -   GF_INSTALL_PLUGINS: frser-sqlite-datasource
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
     volumes:
       - ./data/laravel-db:/var/lib/grafana/laravel-monitor:ro
       - grafana-data:/var/lib/grafana
