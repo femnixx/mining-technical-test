@@ -3,7 +3,7 @@ name: Production Deployment
 on: 
   push: 
     branches: [ "main" ]
-  pull_branches: 
+  pull_request: 
     branches: [ "main" ]
   workflow_dispatch:
 
@@ -17,13 +17,22 @@ jobs:
   steps: 
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Copy docker-compose.yml to the server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.DEBIAN_HOST_IP }}
+        username: ${{ secrets.DEBIAN_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "docker-compose.yml"
+        target: ${{ env.DEPLOY_PATH }}
     
     - name: Deploy docker compose via SSH
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.DEBIAN_HOST_IP }}
-        username: ${{ seecrets.DEBIAN_USER }}
-        key: ${{ seecrets.SSH_PRIVATE_KEY }}
+        username: ${{ secrets.DEBIAN_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: | 
           mkdir -p ${{ env.DEPLOY_PATH }}
           cd ${{ env.DEPLOY_PATH }}
