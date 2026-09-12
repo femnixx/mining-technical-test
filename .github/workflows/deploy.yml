@@ -1,0 +1,35 @@
+name: Production Deployment
+
+on: 
+  push: 
+    branches: [ "main" ]
+  pull_branches: 
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  DEPLOY_PATH: "/var/www/html"
+
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+  
+  steps: 
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Deploy docker compose via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.DEBIAN_HOST_IP }}
+        username: ${{ seecrets.DEBIAN_USER }}
+        key: ${{ seecrets.SSH_PRIVATE_KEY }}
+        script: | 
+          mkdir -p ${{ env.DEPLOY_PATH }}
+          cd ${{ env.DEPLOY_PATH }}
+
+          docker compose pull
+          docker compose down && docker compose up -d --build --remove-orphans
+
+    
+
