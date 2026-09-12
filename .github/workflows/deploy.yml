@@ -25,12 +25,12 @@ jobs:
       - name: Set up SSH Private Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # 3. Securely SSH into your server via Tailscale IP and deploy
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DEBIAN_USER }}@${{ secrets.DEBIAN_HOST_IP }} << 'EOF'
             set -e
             cd /path/to/your/app
             git pull origin main
