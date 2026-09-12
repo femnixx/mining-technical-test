@@ -60,16 +60,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
-      - name: Copy docker-compose.yml to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEBIAN_HOST_IP }}
-          username: ${{ secrets.DEBIAN_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
-          target: "${{ env.DEPLOY_PATH }}"
-
-      - name: Pull & Rolling Restart via SSH
+      - name: Pull & Restart via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEBIAN_HOST_IP }}
@@ -79,14 +70,14 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             cd ${{ env.DEPLOY_PATH }}
             
-            # Pull new images
+            # Pull new container image from GHCR
             docker compose pull
             
-            # Start updated services
+            # Start/update running containers
             docker compose up -d --remove-orphans
             
-            # Run automated Laravel migrations inside container
+            # Execute database migrations inside the running app container
             docker compose exec -T app php artisan migrate --force
             
-            # Clean up old container images to save disk space
+            # Prune stale images older than 72h to maintain server disk space
             docker image prune -af --filter "until=72h"
