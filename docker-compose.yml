@@ -20,7 +20,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "127.0.0.1:3000:3000"
+      - "100.83.47.120:3000:3000"
     environment:
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource
     volumes:

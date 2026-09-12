@@ -1,21 +1,20 @@
 terraform { 
     required_providers { 
-        docker = { 
-            source = "kreuzwerker/docker"
-            version = "~> 3.0.1"
+        tailscale = { 
+            source = "tailscale/tailscale"
+            version: "~> 0.16"
         }
     }
 }
 
-resource "null_resource" "docker_compose" { 
-    provisioner "local-exec" { 
-        command = "docker compose -f ${path.module}/docker-compose.yml up -d --build"
-    }
-
-    provisioner "local-exec" { 
-        when = "destroy"
-        command = "docker compose -f ${path.module}/docker-compose.yml down"
-    }
+provider "tailscale" { 
+    api_key = var.tailscale_api_key
+    tailnet = var.tailnet_name
 }
 
-
+resource "tailscale_tailnet_key" "ci_auth_key" { 
+    reusable        = true
+    ephemeral       = true
+    preauthorized   = true
+    tags            = ["tag:ci"]
+}
