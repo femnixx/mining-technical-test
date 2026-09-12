@@ -1,14 +1,13 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER_LOWER}/mining-technical-test:latest
+    restart: unless-stopped
     ports:
       - "8000:80"
     environment:
       - APP_ENV=production
       - APP_DEBUG=true
-      - APP_URL=localhost:8000
+      - APP_URL=debian-server.tail7b7869.ts.net:8000
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/database/database.sqlite
       - SESSION_DRIVER=file
@@ -21,7 +20,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - GF_INSTALL_PLUGINS=frser-sqlite-datasource
     volumes:
