@@ -36,8 +36,10 @@ jobs:
           script: | 
             set -e 
             cd ~/projects/mining-technical-test
-            git pull origin main
-            docker compose down
-            docker compose up -d --build --remove-orphans
+            git fetch origin main
+            git reset --hard origin/main
+            export GITHUB_REPOSITORY_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+            GITHUB_REPOSITORY_OWNER_LOWER=$GITHUB_REPOSITORY_OWNER_LOWER docker compose down
+            GITHUB_REPOSITORY_OWNER_LOWER=$GITHUB_REPOSITORY_OWNER_LOWER docker compose up -d --build --remove-orphans
             docker image prune -f
           
